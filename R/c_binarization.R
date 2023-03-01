@@ -1,0 +1,54 @@
+
+
+#' Constructs the cumulative binarized time series associated with a given
+#' ordinal time series
+#'
+#' \code{c_binarization} constructs the cumulative binarized time series associated with a given
+#' ordinal time series.
+#'
+#' @param series An OTS (numerical vector with integers).
+#' @param states A numeric vector containing the corresponding
+#' states.
+#' @return The binarized time series.
+#' @examples
+#' c_binarized_series <- c_binarization(AustrianWages$data[[100]],
+#' states = 0 : 5) # Constructing the cumulative binarized
+#' # time series for one OTS in dataset AustrianWages
+#' @details
+#' Given an OTS of length \eqn{T} with range \eqn{\mathcal{S}=\{s_0, s_1, s_2, \ldots, s_n\}} (\eqn{s_0 < s_1 < s_2 < \ldots < s_n}),
+#' \eqn{\overline{X}_t=\{\overline{X}_1,\ldots, \overline{X}_T\}}, the function
+#' constructs the cumulative binarized time series, which is defined as
+#' \eqn{\overline{\boldsymbol Y}_t=\{\overline{\boldsymbol Y}_1, \ldots, \overline{\boldsymbol Y}_T\}},
+#' with \eqn{\overline{\boldsymbol Y}_k=(\overline{Y}_{k,0}, \overline{Y}_{k,1},\ldots, \overline{Y}_{k,n-1})^\top}
+#' such that \eqn{\overline{Y}_{k,i}=1} if \eqn{\overline{X}_k \le s_i} (\eqn{k=1,\ldots,T,
+#' , i=0,\ldots,n-1}). The cumulative binarized series is constructed in the form of a matrix
+#' whose rows represent time observations and whose columns represent the
+#' states in the original series.
+#' @encoding UTF-8
+#' @author
+#' Ángel López-Oriona, José A. Vilar
+#' @references{
+#'
+#'   \insertRef{weiss2018introduction}{otsfeatures}
+#'
+#'   \insertRef{lopez2023hard}{otsfeatures}
+#'
+#' }
+#' @export
+
+c_binarization <- function(series, states) {
+
+  check_ots(series)
+  series_length <- length(series)
+  n_states <- length(states)
+  matrix_binarization <- base::matrix(0, nrow = series_length, ncol = n_states)
+
+  for (i in 1 : n_states) {
+
+    matrix_binarization[,i][which(series <= states[i])] <- 1
+
+  }
+
+  return(matrix_binarization[,-n_states])
+
+}
